@@ -1,0 +1,53 @@
+import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+
+class Rand{
+
+    Random rand = new Random();
+
+    public static void main(String[] args)
+    {
+        int range = 100;
+        int quantity = 10;
+
+        Map<Integer, Integer[]> quantaInt = new HashMap<>();
+
+        List<Integer> quanta = Rand.generateRand1(quantity, range);
+
+        for(Integer num : quanta)
+        {
+            quantaInt.put(
+                num, Rand.generateRand2(num, range).toArray(new Integer[0]);
+            );
+        }
+
+        for
+    }
+
+    public static List<Integer> generateRand1(int quantity, int range)
+    {
+        List<Integer> listInt = new ArrayLits<>();
+
+        while(listInt.size() < quantity)
+        {
+            listInt.add(rand.nextInt(range));
+        }
+        
+        return listInt;
+    }
+
+    public static List<Integer> generateRand2(int quantity, int range)
+    {
+        Set<Integer> setInt = new HashSet<>();
+
+        while(setInt.size() < quantity)
+        {
+            setInt.add(rand.nextInt(range))
+        }
+
+        return new ArrayList<>(setInt);
+    }
+}
