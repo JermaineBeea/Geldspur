@@ -1,19 +1,24 @@
 package ChatSimpler;
-// SimpleServer.java
+
 import java.io.*;
 import java.net.*;
 
 public class SimpleServer {
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(5000);
-        System.out.println("Server started on port 5000");
+        // Define port
+        int port = 5000;
+        
+        // Create server socket that accepts connections on all network interfaces
+        ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("0.0.0.0"));
+        System.out.println("Server started on port " + port);
+        System.out.println("Server IP address: " + getServerIP());
         
         // Accept two clients
         Socket client1 = serverSocket.accept();
-        System.out.println("Client 1 connected");
+        System.out.println("Client 1 connected from: " + client1.getInetAddress().getHostAddress());
         
         Socket client2 = serverSocket.accept();
-        System.out.println("Client 2 connected");
+        System.out.println("Client 2 connected from: " + client2.getInetAddress().getHostAddress());
         
         // Create streams for both clients
         BufferedReader in1 = new BufferedReader(new InputStreamReader(client1.getInputStream()));
@@ -50,6 +55,23 @@ public class SimpleServer {
                 System.out.println("Client 2 disconnected");
             }
         }).start();
+    }
+    
+    // Method to get server's IP address to display for connection info
+    private static String getServerIP() {
+        try {
+            // This tries to find the non-localhost IP address
+            try (Socket socket = new Socket("8.8.8.8", 53)) {
+                return socket.getLocalAddress().getHostAddress();
+            }
+        } catch (IOException e) {
+            // Fallback method if the above doesn't work
+            try {
+                return InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException ex) {
+                return "Could not determine IP address. Use 'ipconfig' or 'ifconfig' to find it.";
+            }
+        }
     }
 }
 

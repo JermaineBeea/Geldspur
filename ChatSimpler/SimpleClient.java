@@ -1,14 +1,21 @@
 package ChatSimpler;
 
-
-// SimpleClient.java
 import java.io.*;
 import java.net.*;
 
 public class SimpleClient {
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost", 5000);
-        System.out.println("Connected to server");
+        // Get server IP from command line or use localhost as default
+        String serverIP = "localhost";
+        if (args.length > 0) {
+            serverIP = args[0];
+        }
+        
+        int port = 5000;
+        
+        System.out.println("Attempting to connect to " + serverIP + " on port " + port);
+        Socket socket = new Socket(serverIP, port);
+        System.out.println("Connected to server: " + socket.getInetAddress().getHostAddress());
         
         // Create reader for server messages
         BufferedReader serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -28,6 +35,7 @@ public class SimpleClient {
                 }
             } catch (IOException e) {
                 System.out.println("Disconnected from server");
+                System.exit(0);
             }
         }).start();
         
