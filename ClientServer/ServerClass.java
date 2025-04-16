@@ -1,39 +1,40 @@
-import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
-class Server {
-    // Default port
-    private static final int PORT = 5000;
-    
-    public static void main(String[] args) {
-        try {
-            // Create a server socket
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("Server started on port " + PORT);
+class ServerClass{
+
+    private static final int PORT = 9000;
+
+    public static void main(String[] args)
+    {
+        try
+        {
+            // Establish Server connection
+            ServerSocket serveconnection = new ServerSocket(PORT);
+            System.out.println("Connect to Port: " + PORT);
             System.out.println("Waiting for client...");
-            
+
             // Accept client connection
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected!");
-            
-            // Set up input stream to receive data from client
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            
-            // Read the name sent by client
-            String username = in.readLine();
-            
-            // Print welcome messages
-            System.out.println("Hello " + username + "!");
-            System.out.println("Welcome to the server!");
-            System.out.println("You are now connected to the server.");
-            
-            // Close resources
-            in.close();
-            clientSocket.close();
-            serverSocket.close();
-            
-        } catch (IOException e) {
-            System.out.println("Server Error: " + e.getMessage());
+            Socket clientconnection = serveconnection.accept();
+            System.out.println("Client Connected!");
+
+            // Set up input-stream.
+            BufferedReader inputstream = new BufferedReader(new InputStreamReader(clientconnection.getInputStream()));
+
+            // Fetch username from client
+            String username = inputstream.readLine();
+            System.out.println("Username " + username + " retrieved from Client!");
+
+            serveconnection.close();
+            clientconnection.close();
+            inputstream.close();
+        }
+        catch(IOException e)
+        {
+            System.out.println("Server error " + e.getMessage());
         }
     }
 }

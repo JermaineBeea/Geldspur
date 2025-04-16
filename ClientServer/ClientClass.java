@@ -1,35 +1,43 @@
-import java.io.*;
-import java.net.*;
+import java.net.Socket;
+import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
-class Client {
-    public static void main(String[] args) {
-        try {
-            // Connect to server
-            Socket socket = new Socket("localhost", 5000);
-            System.out.println("Connected to server!");
-            
-            // Set up scanner for user input
+class ClientClass{
+
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int SERVER_PORT = 9000;
+    public static void main(String[] args)
+    {
+        try
+        {
+            // Establish Client connection to Server Address and Port.
+            Socket clientconection = new Socket(SERVER_ADDRESS, SERVER_PORT);
+            System.out.println("Connected to Address[Port]: " + SERVER_ADDRESS + "[" + SERVER_PORT + "]" );
+
+            // Set up output-stream to Server.
+            PrintWriter outputstream = new PrintWriter(clientconection.getOutputStream(), true);
+
+            // Set up system scanner, to parse user input
             Scanner scanner = new Scanner(System.in);
-            
-            // Set up output stream to send data to server
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            
-            // Ask for name
-            System.out.print("Enter name: ");
-            String userInput = scanner.nextLine();
-            
-            // Send name to server
-            out.println(userInput);
-            System.out.println("Name sent to server!");
-            
+
+            // Get client username
+            System.out.println("Enter user-name below");
+            String username = scanner.nextLine();
+
+            // Send user-name to Server
+            outputstream.println(username);
+            System.out.println("Name sent to Sever!");
+
             // Close resources
+            clientconection.close();
+            outputstream.close();
             scanner.close();
-            out.close();
-            socket.close();
-            
-        } catch (IOException e) {
-            System.out.println("Client Error: " + e.getMessage());
+        }
+        catch(IOException e)
+        {
+            System.out.println("Server error " + e.getMessage());
         }
     }
+
 }

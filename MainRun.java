@@ -31,7 +31,17 @@ class MainRun{
         }
     }
 
+    /**
+     * This method generates a list of random integers.
+     * @param UniqueNumbers boolean indicating if the numbers should be unique  
+     * @param quanity the number of random integers to generate
+     * @param max the maximum value for the random integers
+     * @param min the minimum value for the random integers
+     * @return a list of random integers
+     * @throws IllegalArgumentException if the quantity exceeds the range of unique numbers
+     */
     public static List<Integer> generateRand(boolean UniqueNumbers, int quanity, int max, int min)
+
     {
        return UniqueNumbers ? MainRun.Unique(quanity, max, min) : MainRun.notUnique(quanity, max, min);
     }
@@ -49,7 +59,7 @@ class MainRun{
         {
             randSet.add(randInstance.nextInt(max - min + 1) + min);
         }
-
+        
         List<Integer> randList = new ArrayList<>(randSet);
         Collections.shuffle(randList);
 
@@ -64,7 +74,6 @@ class MainRun{
         {
             randList.add(randInstance.nextInt(max - min + 1) + min);
         }
-
         return randList;
     }
 }
