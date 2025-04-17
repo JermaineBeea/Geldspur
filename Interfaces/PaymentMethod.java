@@ -1,6 +1,5 @@
 package Interfaces;
 
-
 interface PaymentMethod {
     boolean processPayment(double amount);
     void refund(double amount);
@@ -8,6 +7,7 @@ interface PaymentMethod {
     String getPaymentType();
 }
 
+@SuppressWarnings("all")
 // CreditCard class implementing PaymentMethod
 class CreditCard implements PaymentMethod {
     private String cardNumber;
@@ -50,6 +50,7 @@ class CreditCard implements PaymentMethod {
     }
 }
 
+@SuppressWarnings("all")
 // PayPal class implementing PaymentMethod
 class PayPal implements PaymentMethod {
     private String email;
