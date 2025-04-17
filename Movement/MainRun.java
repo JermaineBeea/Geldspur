@@ -1,3 +1,4 @@
+package Movement;
 enum Absolute {
     Ypositive(0, 1), 
     Ynegative(0, -1), 
