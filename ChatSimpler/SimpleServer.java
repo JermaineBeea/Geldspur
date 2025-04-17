@@ -3,6 +3,7 @@ package ChatSimpler;
 import java.io.*;
 import java.net.*;
 
+@SuppressWarnings("all")
 public class SimpleServer {
     public static void main(String[] args) throws IOException {
         // Define port

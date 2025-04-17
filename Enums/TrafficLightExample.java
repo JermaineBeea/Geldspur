@@ -37,7 +37,7 @@ enum TrafficLight {
     }
 }
 
-public class TrafficLightExample {
+class TrafficLightExample {
     public static void main(String[] args) {
         TrafficLight light = TrafficLight.RED;
         

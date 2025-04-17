@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 // import java.util.*;
 
-
+@SuppressWarnings("all")
 public class Client {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 9876;
