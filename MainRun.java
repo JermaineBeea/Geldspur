@@ -1,108 +1,87 @@
-class MainRun {
-
-    public static void main(String[] args) {
-        Position pos1 = new Position();
-        Position pos2 = new Position(1, 2, Direction.EAST);
-
-        System.out.println("Initial pos1: " + pos1);
-        pos1.movePosition(Move.LEFT);
-        System.out.println("After LEFT: " + pos1);
-        pos1.movePosition(Move.FORWARD);
-        System.out.println("After FORWARD: " + pos1);
-        
-        System.out.println("\nInitial pos2: " + pos2);
-        pos2.movePosition(Move.FORWARD);
-        System.out.println("After FORWARD: " + pos2);
+enum Absolute {
+    Ypositive(0, 1), 
+    Ynegative(0, -1), 
+    Xnegative(-1, 0), 
+    Xpositive(1, 0);
+    
+    public final int xUnitChange;
+    public final int yUnitChange;
+    
+    Absolute(int xChange, int yChange) {
+        this.xUnitChange = xChange;
+        this.yUnitChange = yChange;
     }
 }
 
 enum Direction {
-    NORTH("Facing North", 0, 1),
-    EAST("Facing East", 1, 0),
-    SOUTH("Facing South", 0, -1),
-    WEST("Facing West", -1, 0);
+    NORTH(Absolute.Ypositive, Absolute.Ynegative, Absolute.Xnegative, Absolute.Xpositive),
+    SOUTH(Absolute.Ynegative, Absolute.Ypositive, Absolute.Xpositive, Absolute.Xnegative),
+    WEST(Absolute.Xnegative, Absolute.Xpositive, Absolute.Ynegative, Absolute.Ypositive),
+    EAST(Absolute.Xpositive, Absolute.Xnegative, Absolute.Ypositive, Absolute.Ynegative);
     
-    public final String directionMessage;
-    public final int xVectorChange;
-    public final int yVectorChange;
+    public final Absolute forward;
+    public final Absolute backward;
+    public final Absolute left;
+    public final Absolute right;
     
-    Direction(String directionMessage, int xVectorChange, int yVectorChange) {
-        this.directionMessage = directionMessage;
-        this.xVectorChange = xVectorChange;
-        this.yVectorChange = yVectorChange;
+    Direction(Absolute forward, Absolute backward, Absolute left, Absolute right) {
+        this.forward = forward;
+        this.backward = backward;
+        this.left = left;
+        this.right = right;
     }
     
-    // Get the next direction when turning left
-    public Direction turnLeft() {
-        switch(this) {
-            case NORTH: return WEST;
-            case WEST: return SOUTH;
-            case SOUTH: return EAST;
-            case EAST: return NORTH;
-            default: return this; // Should never happen
-        }
-    }
-    
-    // Get the next direction when turning right
-    public Direction turnRight() {
-        switch(this) {
-            case NORTH: return EAST;
-            case EAST: return SOUTH;
-            case SOUTH: return WEST;
-            case WEST: return NORTH;
-            default: return this; // Should never happen
+    // Helper method to get the appropriate Absolute direction
+    public Absolute getAbsolute(Movement movement) {
+        switch(movement) {
+            case FORWARD: return forward;
+            case BACKWARD: return backward;
+            case LEFT: return left;
+            case RIGHT: return right;
+            default: throw new IllegalArgumentException("Unknown movement: " + movement);
         }
     }
 }
 
-enum Move {
-    LEFT, RIGHT, FORWARD, BACKWARD;
+enum Movement {
+    FORWARD, BACKWARD, LEFT, RIGHT
 }
 
 class Position {
+    private Direction direction;
     private int xPos;
     private int yPos;
-    private Direction direction;
     
-    Position(int xPos, int yPos, Direction direction) {
+    public Position(int xPos, int yPos, Direction direction) {
+        this.direction = direction;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.direction = direction;
     }
     
-    Position() {
-        this(0, 0, Direction.NORTH);
+    public int getXPos() {
+        return xPos;
+    }
+    
+    public int getYPos() {
+        return yPos;
     }
     
     public Direction getDirection() {
         return direction;
     }
     
-    public int[] getPosition() {
-        return new int[]{xPos, yPos};
+    public void setDirection(Direction newDirection) {
+        this.direction = newDirection;
     }
     
-    public void movePosition(Move movement) {
-        switch(movement) {
-            case LEFT:
-                direction = direction.turnLeft();
-                break;
-            case RIGHT:
-                direction = direction.turnRight();
-                break;
-            case FORWARD:
-                xPos += direction.xVectorChange;
-                yPos += direction.yVectorChange;
-                break;
-            case BACKWARD:
-                xPos -= direction.xVectorChange;
-                yPos -= direction.yVectorChange;
-                break;
-        }
+    public void move(Movement movement, int motionScale) {
+        Absolute absoluteDirection = direction.getAbsolute(movement);
+        this.xPos += absoluteDirection.xUnitChange * motionScale;
+        this.yPos += absoluteDirection.yUnitChange * motionScale;
     }
     
     @Override
     public String toString() {
-        return "(" + xPos + ", " + yPos + ") " + direction.directionMessage;
+        return "Position: (" + xPos + ", " + yPos + "), Facing: " + direction;
     }
 }
