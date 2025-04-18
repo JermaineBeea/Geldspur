@@ -1,9 +1,7 @@
-package ChatSimpler;
 
 import java.io.*;
 import java.net.*;
 
-@SuppressWarnings("all")
 public class SimpleServer {
     public static void main(String[] args) throws IOException {
         // Define port
@@ -33,14 +31,19 @@ public class SimpleServer {
         out2.println("Connected to server. Start chatting with the other client.");
         
         // Create threads to handle messages
-        new Thread(() -> {
-            try {
+        new Thread(() -> 
+        {
+            try 
+            {
                 String message;
-                while ((message = in1.readLine()) != null) {
+                while ((message = in1.readLine()) != null) 
+                {
                     System.out.println("Client 1: " + message);
                     out2.println("Other client: " + message);
                 }
-            } catch (IOException e) {
+            } 
+            catch (IOException e) 
+            {
                 System.out.println("Client 1 disconnected");
             }
         }).start();
@@ -62,14 +65,18 @@ public class SimpleServer {
     private static String getServerIP() {
         try {
             // This tries to find the non-localhost IP address
-            try (Socket socket = new Socket("8.8.8.8", 53)) {
+            try (Socket socket = new Socket("8.8.8.8", 53)) 
+            {
                 return socket.getLocalAddress().getHostAddress();
             }
-        } catch (IOException e) {
+        } catch (IOException e) 
+        {
             // Fallback method if the above doesn't work
-            try {
+            try 
+            {
                 return InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException ex) {
+            } catch (UnknownHostException ex) 
+            {
                 return "Could not determine IP address. Use 'ipconfig' or 'ifconfig' to find it.";
             }
         }
