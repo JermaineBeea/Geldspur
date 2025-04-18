@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-class CLient{
+class Client {
 
     private static final int serverPort = 9000;
 
@@ -12,35 +12,36 @@ class CLient{
     {
         String serverIP = (args.length > 0) ? args[0] : "localhost";
 
-        try(Socket serversocket = new Socket(serverIP, serverPort))
+        try(Socket serverSocket = new Socket(serverIP, serverPort))
         {
         
         // Set up Server input-output streams.
-        BufferedReader fromServer = new BufferedReader (new InputStreamReader(serversocket.getInputStream()));
-        PrintWriter toServer = new PrintWriter(serversocket.getOutputStream(), true);
+        BufferedReader fromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+        PrintWriter toServer = new PrintWriter(serverSocket.getOutputStream(), true);
 
         // Set up client Keyboard input.
         BufferedReader keyInput = new BufferedReader(new InputStreamReader(System.in));
 
-        // Get client Nname and send to Server.
+        // Get client name and send to Server.
         System.out.println("Enter name below");
-        String clientname = keyInput.readLine();
-        toServer.println(clientname);
+        String clientName = keyInput.readLine();
+        toServer.println(clientName);
 
-        //Recieve welcome messages and other client name.
-        fromServer.readLine();
-        String otherclient = fromServer.readLine();
+        // Receive welcome messages and other client name.
+        String welcomeMessage = fromServer.readLine();
+        System.out.println(welcomeMessage);
+        String otherClient = fromServer.readLine();
+        System.out.println("Connected with: " + otherClient);
 
-        // Create Thread fpr in-coming messages from Server.
-
-        new Thread(()-> 
+        // Create Thread for in-coming messages from Server.
+        new Thread(() -> 
         {
             try
             {
                 String inMessage;
                 while((inMessage = fromServer.readLine()) != null)
                 {
-                    System.out.println(otherclient + ": " + inMessage);
+                    System.out.println(otherClient + ": " + inMessage);
                 }
             }
             catch(IOException e)
@@ -60,8 +61,8 @@ class CLient{
         }
         catch(IOException e)
         {
-            System.out.println("Client Error!");
+            System.out.println("Client Error: " + e.getMessage());
+            e.printStackTrace();
         }
-
     }
 }

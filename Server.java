@@ -7,26 +7,26 @@ import java.io.PrintWriter;
 import java.net.UnknownHostException;
 import java.io.IOException;
 
-class Server{
+class Server {
 
     private static final int serverPort = 9000;
     private static final String serverIP = getServerIP();
 
     public static void main(String[] args)
     {
-        try (ServerSocket serversocket = new ServerSocket(serverPort, 50, InetAddress.getByName("0.0.0.0")))
+        try (ServerSocket serverSocket = new ServerSocket(serverPort, 50, InetAddress.getByName("0.0.0.0")))
         {
             // Establish Server connection.
-            System.out.println("Connected to ServerIp: " + serverIP);
+            System.out.println("Server started on IP: " + serverIP + ", port: " + serverPort);
 
             // Set client1 connections.
-            Socket clientSocket1 = serversocket.accept();
+            Socket clientSocket1 = serverSocket.accept();
             String Ipclient1 = clientSocket1.getInetAddress().getHostAddress();
             System.out.println("Client1 connected from: " + Ipclient1);
             System.out.println("Waiting for client2...");
 
             // Set client2 connections.
-            Socket clientSocket2 = serversocket.accept();
+            Socket clientSocket2 = serverSocket.accept();
             String Ipclient2 = clientSocket2.getInetAddress().getHostAddress();
             System.out.println("Client2 connected from: " + Ipclient2);
 
@@ -37,9 +37,12 @@ class Server{
             PrintWriter toClient1 = new PrintWriter(clientSocket1.getOutputStream(), true);
             PrintWriter toClient2 = new PrintWriter(clientSocket2.getOutputStream(), true);
 
-            // Recieve client names.
+            // Receive client names.
             String client1Name = fromClient1.readLine();
             String client2Name = fromClient2.readLine();
+
+            System.out.println("Client1 registered as: " + client1Name);
+            System.out.println("Client2 registered as: " + client2Name);
 
             // Send Welcome messages to clients and send other client name.
             toClient1.println("Hello " + client1Name + ", welcome to the Server");
@@ -48,27 +51,28 @@ class Server{
             toClient2.println("Hello " + client2Name + ", welcome to the Server");
             toClient2.println(client1Name);
 
-            // Create Thread to send-recieve from client.
+            // Create Thread to send-receive from client.
             createThread(client1Name, fromClient1, toClient2);
             createThread(client2Name, fromClient2, toClient1);
         }
         catch(IOException e)
         {
-            System.out.println("Server Error");
+            System.out.println("Server Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // Thread to recieve/send messages from/to client.
-    private static void createThread(String clientname, BufferedReader fromClient, PrintWriter toClient)
+    // Thread to receive/send messages from/to client.
+    private static void createThread(String clientName, BufferedReader fromClient, PrintWriter toClient)
     {
-        new Thread(()-> {
-
+        new Thread(() -> {
             try
-            {   String inMessage;
+            {   
+                String inMessage;
                 while((inMessage = fromClient.readLine()) != null)
                 {
-                    // Print client messages to each other.
-                    System.out.println(clientname + ": " + fromClient);
+                    // Print client messages to server console
+                    System.out.println(clientName + ": " + inMessage);
 
                     // Send message to other client.
                     toClient.println(inMessage);
@@ -76,9 +80,8 @@ class Server{
             }
             catch(IOException e)
             {
-                System.out.println(clientname + ", has been disconnected");
+                System.out.println(clientName + " has been disconnected");
             }
-
         }).start();
     }
 
@@ -94,12 +97,12 @@ class Server{
         catch(IOException e)
         {
             try
-            {   // Find Loval Address.
+            {   // Find Local Address.
                 return InetAddress.getLocalHost().getHostAddress();
             }
             catch(UnknownHostException ex)
             {
-                return "Could not find Server Ip";
+                return "Could not determine Server IP";
             }
         }
     }
