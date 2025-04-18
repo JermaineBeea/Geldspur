@@ -25,6 +25,14 @@ public class SimpleServer {
         
         BufferedReader in2 = new BufferedReader(new InputStreamReader(client2.getInputStream()));
         PrintWriter out2 = new PrintWriter(client2.getOutputStream(), true);
+
+        String client1Name = in1.readLine();
+        String client2Name = in2.readLine();
+        System.out.println("Client 1 name: " + client1Name);
+        System.out.println("Client 2 name: " + client2Name);
+        // Send welcome messages to both clients
+        // out1.println("Welcome " + client1Name + "! You are now connected to " + client2Name);
+        // out2.println("Welcome " + client2Name + "! You are now connected to " + client1Name);
         
         // Tell clients they're connected
         out1.println("Connected to server. Start chatting with the other client.");

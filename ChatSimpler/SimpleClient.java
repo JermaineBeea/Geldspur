@@ -24,6 +24,12 @@ public class SimpleClient {
             
             // Create reader for keyboard input
             BufferedReader keyboardIn = new BufferedReader(new InputStreamReader(System.in));
+
+            // Get client name from user
+            System.out.print("Enter your name: ");
+            String clientName = keyboardIn.readLine();
+            out.println(clientName);
+            System.out.println("Welcome " + clientName + "! You are now connected to the server.");
             
             // Thread to read messages from server
             new Thread(() -> {
